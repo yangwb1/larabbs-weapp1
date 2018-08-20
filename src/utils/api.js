@@ -123,6 +123,29 @@ const login = async (params = {}) => {
   return authResponse
 }
 
+const updateFile = async (options = {}) => {
+  // 显示loading
+  wepy.showLoading({title: '上传中'})
+
+  // 获取 token
+  let accessToken = await getToken()
+
+  // 拼接url
+  options.url = host + '/' + options.url
+  let header = options.header || {}
+  // 将 token 设置在 header 中
+  header.Authorization = 'Bearer ' + accessToken
+  options.header = header
+
+  // 上传文件
+  let response = await wepy.uploadFile(options)
+
+  // 隐藏 loading
+  wepy.hideLoading()
+
+  return response
+}
+
 //  退出登录
 const logout = async (params = {}) => {
   let accessToken = wepy.getStorageSync('access_token')
@@ -148,5 +171,6 @@ export default {
   authRequest,
   refreshToken,
   login,
-  logout
+  logout,
+  updateFile
 }
